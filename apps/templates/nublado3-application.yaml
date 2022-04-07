@@ -1,0 +1,31 @@
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nublado3
+spec:
+  finalizers:
+    - kubernetes
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nublado3
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: nublado3
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: services/nublado3
+    repoURL: {{ .Values.repoURL }}
+    targetRevision: {{ .Values.revision }}
+    helm:
+      valueFiles:
+        - nublado3/values.yaml
+	- nublado3/values-rsp-lapp.yaml
+	
+
